@@ -22,11 +22,14 @@ CONTROLLER   CONTAINER(S)   IMAGE(S)          SELECTOR       REPLICAS
 frontend     frontend       deis/helloworld   app=frontend   2
 ```
 
-## Service
+## ELB Service
+
+Services tie pods to externally (and internally) identifiable names. By default Pods are not exposed
+to external address. Services provide ways to expose your Pods services.
 
 Kubernetes has a few different ways to create Services, but when on AWS, we can have
 a service that sets up an Elastic Load Balancer tied to our replication controller pods. This
-is super slick.
+is super slick. Other cloud platforms that have concepts similar to ELBs may have similar outcomes.
 
 ```bash
 $ kubectl create -f frontend-svc.yaml
@@ -68,3 +71,25 @@ See the documentation at http://docs.deis.io/ for more information.
 ```
 
 __note__ the docker webserver we use is just a dummy webapp from the Deis project.
+
+## DNS Service Discovery
+
+Another way to access services inside the Kubernetes cluster is via DNS. Kubernetes provides
+`kubedns`, so as long as that is running, our pods can access other services via dns:
+
+Lets create a pod that we can remote execute commands through:
+
+```bash
+kubectl create -f curlpod.yaml
+```
+
+Now lets run an `nslookup` on our `frontendsvc`;
+
+```bash
+$ kubectl exec curlpod -- nslookup frontendsvc
+Server:    10.0.0.10
+Address 1: 10.0.0.10 ip-10-0-0-10.us-west-2.compute.internal
+
+Name:      frontendsvc
+Address 1: 10.0.25.103 ip-10-0-25-103.us-west-2.compute.internal
+```
