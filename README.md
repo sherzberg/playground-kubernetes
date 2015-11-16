@@ -93,3 +93,11 @@ Address 1: 10.0.0.10 ip-10-0-0-10.us-west-2.compute.internal
 Name:      frontendsvc
 Address 1: 10.0.25.103 ip-10-0-25-103.us-west-2.compute.internal
 ```
+
+Any just for good measure:
+
+```bash
+$ kubectl exec curlpod -- curl -s frontendsvc
+Welcome to Deis!
+See the documentation at http://docs.deis.io/ for more information.
+```
